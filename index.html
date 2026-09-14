@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studies in the Space Between</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f2ead6;
+    --paper-deep: #e9dcbd;
+    --ink: #332c22;
+    --ink-soft: #7a6c56;
+    --margin-red: #a3402f;
+    --desk: #2c2820;
+    --desk-deep: #201d17;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% -10%, #3a352b 0%, transparent 60%),
+      linear-gradient(180deg, var(--desk) 0%, var(--desk-deep) 100%);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- site chrome ---------- */
+
+  .top-bar{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display:flex;
+    justify-content: flex-end;
+    padding: 28px 40px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .top-bar a{
+    pointer-events: auto;
+    font-style: italic;
+    font-size: 18px;
+    color: #cfc3a8;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease, color 0.25s ease;
+  }
+  .top-bar a:hover{
+    color: #f2ead6;
+    border-color: rgba(242,234,214,0.5);
+  }
+  body.on-cover .top-bar a{ display:none; }
+
+  /* ---------- the page itself ---------- */
+
+  main{
+    display:flex;
+    justify-content:center;
+    padding: 100px 24px 80px;
+  }
+
+  .leaf{
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    min-height: 840px;
+    background: var(--paper);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 30px 60px rgba(0,0,0,0.45),
+      0 4px 14px rgba(0,0,0,0.35);
+    padding: 64px 56px 56px 108px;
+    display:flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: settle 0.6s ease forwards;
+  }
+
+  @keyframes settle{
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .leaf{ animation: none; opacity:1; transform:none; }
+  }
+
+  .leaf::before{
+    /* the red margin rule */
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 72px;
+    width: 1px;
+    background: var(--margin-red);
+    opacity: 0.7;
+  }
+
+  .leaf::after{
+    /* faint paper vignette, darkest at the edges */
+    content:'';
+    position:absolute; inset:0;
+    box-shadow: inset 0 0 70px rgba(120,100,60,0.10);
+    pointer-events:none;
+  }
+
+  .illustration{
+    min-height: 170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .illustration img{
+    max-width: 100%;
+    max-height: 240px;
+    display:block;
+  }
+
+  .content{
+    flex: 1;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  h1.title{
+    text-align:center;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 40px;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+
+  .rule{
+    width: 64px;
+    height: 1px;
+    background: var(--ink-soft);
+    opacity: 0.5;
+    margin: 0 auto 40px;
+  }
+
+  .stanza{
+    margin: 0 0 28px;
+  }
+  .stanza:last-child{ margin-bottom: 0; }
+
+  .stanza p{
+    margin: 0;
+    text-align: center;
+    font-size: 21px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .stanza p.italic{ font-style: italic; }
+
+  .prose p{
+    text-align: left;
+    font-size: 20px;
+    line-height: 1.85;
+    color: var(--ink);
+    margin: 0 0 22px;
+    max-width: 62ch;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .foot-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top: 36px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(51,44,34,0.12);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-soft);
+    flex-shrink:0;
+  }
+  .foot-nav a{
+    text-decoration:none;
+    color: var(--ink-soft);
+    transition: color 0.2s ease;
+  }
+  .foot-nav a:hover{ color: var(--ink); }
+  .foot-nav .disabled{ visibility:hidden; }
+  .foot-nav .num{ letter-spacing: 0.06em; }
+
+  /* ---------- cover / contents page ---------- */
+
+  .cover-title{
+    text-align:center;
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: 64px;
+    color: var(--ink);
+    margin: 10px 0 4px;
+    line-height: 1.1;
+  }
+  .cover-sub{
+    text-align:center;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin: 0 auto 46px;
+    max-width: 34ch;
+  }
+
+  .toc{
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 420px;
+  }
+  .toc li{
+    display:flex;
+    align-items: baseline;
+    gap: 26px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(51,44,34,0.1);
+  }
+  .toc li:last-child{ border-bottom:none; }
+  .toc .num{
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+    width: 2.4em;
+    flex-shrink:0;
+    text-align:right;
+    padding-right: 4px;
+  }
+  .toc a{
+    text-decoration:none;
+    color: var(--ink);
+    font-size: 21px;
+    flex:1;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+  .toc a:hover{ border-color: var(--margin-red); }
+
+  @media (max-width: 640px){
+    main{ padding: 88px 10px 60px; }
+    .leaf{ padding: 44px 20px 36px 46px; min-height: 720px; }
+    .leaf::before{ left: 26px; }
+    h1.title{ font-size: 30px; }
+    .cover-title{ font-size: 42px; }
+    .stanza p, .prose p{ font-size: 18px; }
+    .toc a{ font-size: 19px; }
+    .top-bar{ padding: 20px 18px; }
+  }
+
+  @media (max-width: 380px){
+    .stanza p, .prose p{ font-size: 16.5px; }
+  }
+
+  .site-signature{
+    position: fixed;
+    bottom: 22px;
+    left: 32px;
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: 22px;
+    color: rgba(207, 195, 168, 0.16);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    z-index: 5;
+    user-select: none;
+  }
+
+  @media (max-width: 640px){
+    .site-signature{ font-size: 18px; left: 18px; bottom: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar"><a href="#/">Contents</a></div>
+<div class="site-signature">Muddled thoughts of a un-caffeinated brain</div>
+<main id="stage"></main>
+
+<script>
+/* ============ CONTENT ============
+   Add new poems (or, later, stories) to this array.
+   type: "poem"  -> stanzas: array of stanzas, each an array of
+                     { text, italic? }
+   type: "story" -> paragraphs: array of strings
+   illustrationTop / illustrationBottom: optional image URLs.
+=================================== */
+var works = [
+  {
+    slug: "lets-just-say",
+    type: "poem",
+    title: "Let\u2019s Just Say",
+    stanzas: [
+      [{text:"When we meet again after all these years,"},{text:"what tales will we even tell."}],
+      [{text:"Trying to fold decades in minutes,"},{text:"and at that beautifully fail."}],
+      [{text:"Let\u2019s just say a few lies,"},{text:"and smile them into truth."}],
+      [{text:"The conversation will never reach"},{text:"the place where the pain begins."}],
+      [{text:"We\u2019ve both gotten so good at this,"},{text:"smiling away whatever needed to be said."}]
+    ]
+  },
+  {
+    slug: "im-fine",
+    type: "poem",
+    title: "I\u2019m fine",
+    stanzas: [
+      [
+        {text:"A door held shut, from the inside, politely,"},
+        {text:"so you won\u2019t have to see, what it\u2019s holding back."},
+        {text:"Somewhere, someone is always saying it,"},
+        {text:"somewhere, someone always knows,"},
+        {text:"it isn\u2019t true, and lets it go anyway.", italic:true}
+      ]
+    ]
+  },
+  {
+    slug: "half-open",
+    type: "poem",
+    title: "Half Open",
+    stanzas: [
+      [{text:"A book sitting on the ledge,"},{text:"hoping to catch a breeze to turn the page."}],
+      [{text:"A half open curtain on the window,"},{text:"leaving room for the morning to wander in."}],
+      [
+        {text:"The fleeting moments of life,"},
+        {text:"writing new stories before the last one ends,"},
+        {text:"already dissolving into ether.", italic:true}
+      ]
+    ]
+  },
+  {
+    slug: "doing-the-dishes",
+    type: "poem",
+    title: "Doing the Dishes",
+    stanzas: [
+      [
+        {text:"Like the rain that came without warning,"},
+        {text:"the argument that no one was going to win."},
+        {text:"Like an old song surfacing,"},
+        {text:"while you\u2019re doing the dishes."}
+      ],
+      [
+        {text:"What\u2019s left isn\u2019t the storm, or the song -"},
+        {text:"it\u2019s what stayed after both of them passed."}
+      ],
+      [
+        {text:"Some things stay soft inside you -"},
+        {text:"not wounds, not wishes."},
+        {text:"Just proof that once,"},
+        {text:"something mattered."},
+        {text:"And that is enough."},
+        {text:"That has always been enough."}
+      ],
+      [
+        {text:"It comes not from having,", italic:true},
+        {text:"it comes from being.", italic:true}
+      ]
+    ]
+  },
+  {
+    slug: "still-standing",
+    type: "poem",
+    title: "Still Standing",
+    stanzas: [
+      [
+        {text:"A stifled voice,"},
+        {text:"a buried argument,"},
+        {text:"the nothings that became sorrow,"},
+        {text:"maybe we will talk about them tomorrow."}
+      ],
+      [
+        {text:"Home moved an inch away -"},
+        {text:"not a crack in the paint -"},
+        {text:"even while we stayed."}
+      ]
+    ]
+  },
+  {
+    slug: "elsewhere",
+    type: "poem",
+    title: "Elsewhere",
+    stanzas: [
+      [
+        {text:"They sat at the same table,"},
+        {text:"steam rising from both the mugs."},
+        {text:"Thumbs moving faster"},
+        {text:"than anything that\u2019s said."}
+      ],
+      [
+        {text:"She laughs - not at something he said."},
+        {text:"He nods - not at her."}
+      ],
+      [
+        {text:"The mugs go quiet between them."},
+        {text:"The steam gives up before they do."}
+      ],
+      [
+        {text:"Not lonely, exactly."},
+        {text:"Just elsewhere -"},
+        {text:"two worlds sharing a table,"},
+        {text:"never quite the same room."}
+      ]
+    ]
+  },
+  {
+    slug: "another-way-around",
+    type: "poem",
+    title: "Another Way Around",
+    stanzas: [
+      [
+        {text:"The mountain spring pushing against the rock,"},
+        {text:"never certain if the silence means no, or nothing at all,"},
+        {text:"it stops pushing, finds another way around -"},
+        {text:"calls it patience, calls it moving on."}
+      ],
+      [
+        {text:"\u201cHelp\u201d comes to the tip of the tongue,"},
+        {text:"uncertain if anyone\u2019s listening on the other side."},
+        {text:"So it stays there, unsaid,"},
+        {text:"and something smaller takes its place."}
+      ],
+      [
+        {text:"The rock stays,"},
+        {text:"never having to answer,"},
+        {text:"never having been asked."}
+      ]
+    ]
+  }
+];
+
+var COLLECTION_TITLE = "Studies in the Space Between";
+var COLLECTION_SUB = "Poems about the space between people, and the things that live there.";
+
+/* ============ helpers ============ */
+
+function toRoman(num){
+  var map = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+    [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  var res = "";
+  for (var i = 0; i < map.length; i++){
+    var v = map[i][0], s = map[i][1];
+    while (num >= v){ res += s; num -= v; }
+  }
+  return res;
+}
+
+function findWorkIndex(slug){
+  for (var i = 0; i < works.length; i++){
+    if (works[i].slug === slug) return i;
+  }
+  return -1;
+}
+
+function renderWorkBody(work){
+  var i, j;
+  if (work.type === "story"){
+    var pHtml = "";
+    for (i = 0; i < work.paragraphs.length; i++){
+      pHtml += "<p>" + work.paragraphs[i] + "</p>";
+    }
+    return '<div class="prose">' + pHtml + "</div>";
+  }
+  var stanzaHtml = "";
+  for (i = 0; i < work.stanzas.length; i++){
+    var st = work.stanzas[i];
+    var lines = "";
+    for (j = 0; j < st.length; j++){
+      var l = st[j];
+      lines += '<p' + (l.italic ? ' class="italic"' : '') + '>' + l.text + '</p>';
+    }
+    stanzaHtml += '<div class="stanza">' + lines + '</div>';
+  }
+  return '<div class="poem">' + stanzaHtml + '</div>';
+}
+
+function renderIllustration(src){
+  return '<div class="illustration">' + (src ? '<img src="' + src + '" alt="">' : '') + '</div>';
+}
+
+function renderPoemPage(index){
+  var work = works[index];
+  var prev = works[index - 1];
+  var next = works[index + 1];
+  var pageNum = toRoman(index + 1);
+  var total = toRoman(works.length);
+
+  var prevLink = prev
+    ? '<a href="#/work/' + prev.slug + '">&larr; ' + prev.title + '</a>'
+    : '<span class="disabled">&larr;</span>';
+  var nextLink = next
+    ? '<a href="#/work/' + next.slug + '">' + next.title + ' &rarr;</a>'
+    : '<span class="disabled">&rarr;</span>';
+
+  return (
+    '<article class="leaf">' +
+      renderIllustration(work.illustrationTop) +
+      '<div class="content">' +
+        '<h1 class="title">' + work.title + '</h1>' +
+        '<div class="rule"></div>' +
+        renderWorkBody(work) +
+      '</div>' +
+      renderIllustration(work.illustrationBottom) +
+      '<div class="foot-nav">' +
+        prevLink +
+        '<span class="num">' + pageNum + ' / ' + total + '</span>' +
+        nextLink +
+      '</div>' +
+    '</article>'
+  );
+}
+
+function renderCover(){
+  var items = "";
+  for (var i = 0; i < works.length; i++){
+    items += (
+      '<li>' +
+        '<span class="num">' + toRoman(i+1) + '</span>' +
+        '<a href="#/work/' + works[i].slug + '">' + works[i].title + '</a>' +
+      '</li>'
+    );
+  }
+
+  return (
+    '<article class="leaf">' +
+      '<div class="illustration"></div>' +
+      '<div class="content">' +
+        '<div class="cover-title">' + COLLECTION_TITLE + '</div>' +
+        '<div class="cover-sub">' + COLLECTION_SUB + '</div>' +
+        '<ul class="toc">' + items + '</ul>' +
+      '</div>' +
+      '<div class="illustration"></div>' +
+    '</article>'
+  );
+}
+
+/* ============ router ============ */
+
+var stage = document.getElementById("stage");
+
+function route(){
+  var hash = location.hash || "#/";
+  var match = hash.match(/^#\/work\/(.+)$/);
+  stage.innerHTML = "";
+
+  if (match){
+    var idx = findWorkIndex(match[1]);
+    if (idx === -1){ location.hash = "#/"; return; }
+    document.body.classList.remove("on-cover");
+    stage.innerHTML = renderPoemPage(idx);
+  } else {
+    document.body.classList.add("on-cover");
+    stage.innerHTML = renderCover();
+  }
+  window.scrollTo(0,0);
+}
+
+window.addEventListener("hashchange", route);
+document.addEventListener("keydown", function(e){
+  var hash = location.hash || "#/";
+  var match = hash.match(/^#\/work\/(.+)$/);
+  if (!match) return;
+  var idx = findWorkIndex(match[1]);
+  if (idx === -1) return;
+  if (e.key === "ArrowRight" && works[idx+1]) location.hash = "#/work/" + works[idx+1].slug;
+  if (e.key === "ArrowLeft" && works[idx-1]) location.hash = "#/work/" + works[idx-1].slug;
+  if (e.key === "ArrowLeft" && idx === 0) location.hash = "#/";
+});
+
+route();
+</script>
+</body>
+</html>
