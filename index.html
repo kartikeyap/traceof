@@ -35,30 +35,41 @@
 
   /* ---------- site chrome ---------- */
 
-  .top-bar{
+  .site-nav{
     position: fixed;
     top: 0; left: 0; right: 0;
     display:flex;
-    justify-content: flex-end;
-    padding: 28px 40px;
+    justify-content: center;
+    align-items: center;
+    padding: 26px 24px;
     z-index: 20;
-    pointer-events: none;
+    flex-wrap: wrap;
   }
-  .top-bar a{
-    pointer-events: auto;
+  .site-nav a{
     font-style: italic;
-    font-size: 18px;
+    font-size: 17px;
     color: #cfc3a8;
     text-decoration: none;
     letter-spacing: 0.02em;
+    opacity: 0.5;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.25s ease, color 0.25s ease;
+    transition: border-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+    margin: 0 10px;
   }
-  .top-bar a:hover{
+  .site-nav a:hover{
+    opacity: 1;
     color: #f2ead6;
     border-color: rgba(242,234,214,0.5);
   }
-  body.on-cover .top-bar a{ display:none; }
+  .site-nav a.active{
+    opacity: 1;
+    color: #f2ead6;
+    border-color: rgba(242,234,214,0.3);
+  }
+  .site-nav .sep{
+    color: #6b6252;
+    font-size: 14px;
+  }
 
   /* ---------- the page itself ---------- */
 
@@ -165,6 +176,21 @@
   }
   .stanza p.italic{ font-style: italic; }
 
+  .postscript{
+    font-family: 'Mrs Saint Delafield', cursive;
+    font-size: 26px;
+    text-align: center;
+    color: var(--ink-soft);
+    margin: 30px 0 0;
+    opacity: 0.85;
+  }
+  .postscript a{
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+  }
+  .postscript a:hover{ opacity: 1; }
+
   .prose p{
     text-align: left;
     font-size: 20px;
@@ -256,8 +282,10 @@
     h1.title{ font-size: 30px; }
     .cover-title{ font-size: 42px; }
     .stanza p, .prose p{ font-size: 18px; }
+    .postscript{ font-size: 21px; }
     .toc a{ font-size: 19px; }
-    .top-bar{ padding: 20px 18px; }
+    .site-nav{ padding: 18px 14px; }
+    .site-nav a{ font-size: 15px; margin: 0 6px; }
   }
 
   @media (max-width: 380px){
@@ -284,19 +312,27 @@
 </head>
 <body>
 
-<div class="top-bar"><a href="#/">Contents</a></div>
+<div class="site-nav" id="site-nav"></div>
 <div class="site-signature">Muddled thoughts of a un-caffeinated brain</div>
 <main id="stage"></main>
 
 <script>
 /* ============ CONTENT ============
-   Add new poems (or, later, stories) to this array.
+   The site holds one or more collections. Add new poems (or, later,
+   stories) inside the right collection's `works` array. To start a
+   new collection, add another object to `collections` below.
+
    type: "poem"  -> stanzas: array of stanzas, each an array of
                      { text, italic? }
    type: "story" -> paragraphs: array of strings
    illustrationTop / illustrationBottom: optional image URLs.
 =================================== */
-var works = [
+var collections = [
+  {
+    slug: "space-between",
+    title: "Studies in the Space Between",
+    subtitle: "Thoughts about the space between people, and the things that live there.",
+    works: [
   {
     slug: "lets-just-say",
     type: "poem",
@@ -378,9 +414,9 @@ var works = [
         {text:"maybe we will talk about them tomorrow."}
       ],
       [
-        {text:"Home moved an inch away -", italic:true},
-        {text:"not a crack in the paint -", italic:true},
-        {text:"even while we stayed.", italic:true}
+        {text:"Home moved an inch away -"},
+        {text:"not a crack in the paint -"},
+        {text:"even while we stayed."}
       ]
     ]
   },
@@ -436,6 +472,109 @@ var works = [
     ]
   },
   {
+    slug: "mirrors-to-the-soul",
+    type: "poem",
+    title: "Mirrors to the Soul",
+    stanzas: [
+      [
+        {text:"They hold back a brewing storm,"},
+        {text:"to show a surface that\u2019s calm."},
+        {text:"The water wavers sometimes,"},
+        {text:"a drop of silence rolls down."}
+      ],
+      [
+        {text:"The world sees the smile,"},
+        {text:"not the sadness it conceals."},
+        {text:"Only one once found the way through,"},
+        {text:"until even they looked away."}
+      ],
+      [
+        {text:"The storm rages on,"},
+        {text:"under the mirrors to the soul."}
+      ]
+    ]
+  },
+  {
+    slug: "the-quiet-meadow",
+    type: "poem",
+    title: "The Quiet Meadow",
+    stanzas: [
+      [
+        {text:"Like a bridge built of fog, that carries it all,"},
+        {text:"unfulfilled dreams, big and small."},
+        {text:"It is the courage for the impossible,"},
+        {text:"it is the fear of falling short."}
+      ],
+      [
+        {text:"Suspended between blooming and fading away,"},
+        {text:"it\u2019s the twilight of thought, where reality sways,"},
+        {text:"and every shadow can be a doorway."}
+      ],
+      [
+        {text:"Between the sharp edges of \u201cyes\u201d and \u201cno,\u201d"},
+        {text:"there is a quiet meadow,"},
+        {text:"where impossible things gather to sleep."}
+      ]
+    ]
+  },
+  {
+    slug: "silences",
+    type: "poem",
+    title: "Silences",
+    stanzas: [
+      [
+        {text:"They speak for things left unsaid,"},
+        {text:"or the biggest price of our dreams we paid."}
+      ],
+      [
+        {text:"For griefs too old for words,"},
+        {text:"and quiet moments of joy."},
+        {text:"Like a chair in the room,"},
+        {text:"that weighs more than the house."}
+      ],
+      [
+        {text:"Comfortable as old shoes,"},
+        {text:"and haunting as a dark road -"},
+        {text:"the loudest thing in any room,"},
+        {text:"long after the words are gone."}
+      ]
+    ]
+  }
+    ]
+  },
+  {
+    slug: "mid-leap",
+    title: "Mid-Leap",
+    subtitle: "Notes on wonder, and the slow art of watching.",
+    works: [
+  {
+    slug: "lets-find",
+    type: "poem",
+    title: "Let\u2019s Find",
+    stanzas: [
+      [
+        {text:"Let\u2019s find a different sky,"},
+        {text:"where sunsets do not offer apology,"},
+        {text:"and stars are not shy."}
+      ],
+      [
+        {text:"Let\u2019s find that meadow,"},
+        {text:"where flowers bloom,"},
+        {text:"and don\u2019t fear the vase."}
+      ],
+      [
+        {text:"Let\u2019s find the woods,"},
+        {text:"that hide secrets of old,"},
+        {text:"where the wild things are."}
+      ],
+      [
+        {text:"Let\u2019s find that river,"},
+        {text:"flowing like ruthless march of time,"},
+        {text:"not in a hurry to be anywhere."}
+      ]
+    ]
+  },
+  {
     slug: "fables",
     type: "poem",
     title: "Fables",
@@ -459,32 +598,168 @@ var works = [
     ]
   },
   {
-    slug: "the-quiet-meadow",
+    slug: "mid-leap",
     type: "poem",
-    title: "The Quiet Meadow",
+    title: "Mid-Leap",
     stanzas: [
       [
-        {text:"Like a bridge built of fog, that carries it all,"},
-        {text:"unfulfilled dreams, big and small."},
-        {text:"It is the courage for the impossible,"},
-        {text:"it is the fear of falling short."}
+        {text:"I saw a car chasing a dog,"},
+        {text:"a clown with a funny nose,"},
+        {text:"a whale that melted mid-leap,"},
+        {text:"a castle that no one chose,"},
+        {text:"painted in white on a blue canvas,"},
+        {text:"giving imagination a chance."}
       ],
       [
-        {text:"Suspended between blooming and fading away,"},
-        {text:"it\u2019s the twilight of thought, where reality sways,"},
-        {text:"and every shadow can be a doorway."}
+        {text:"Oh, if only it could paint our memories,"},
+        {text:"of the days when dreams were not so scarce,"},
+        {text:"when lying on grass was the only plan,"},
+        {text:"and time moved slow enough to touch."}
       ],
       [
-        {text:"Between the sharp edges of \u201cyes\u201d and \u201cno,\u201d", italic:true},
-        {text:"there is a quiet meadow,", italic:true},
-        {text:"where impossible things gather to sleep.", italic:true}
+        {text:"Now the sky still shifts and wanders,"},
+        {text:"but we\u2019ve forgotten how to watch."}
       ]
     ]
   }
+    ]
+  },
+  {
+    slug: "before-its-done",
+    title: "Before It\u2019s Done",
+    subtitle: "On endings, and the things we do before they arrive.",
+    works: [
+  {
+    slug: "for-no-reason-at-all",
+    type: "poem",
+    title: "For No Reason At All",
+    stanzas: [
+      [
+        {text:"Where time pauses and slows,"},
+        {text:"and is measured in shadows."},
+        {text:"Where the wind whistles a melody,"},
+        {text:"tempting you with a lullaby."},
+        {text:"Where evenings put on a show,"},
+        {text:"with colors around the dying sun."}
+      ],
+      [
+        {text:"Let\u2019s go to those hills,"},
+        {text:"where the grass dances -"},
+        {text:"for no reason at all."}
+      ],
+      [
+        {text:"Let\u2019s find new heartbreaks,"},
+        {text:"with fresh scars burying the old ones."},
+        {text:"Let\u2019s live a lifetime,"},
+        {text:"before the day is done."}
+      ]
+    ]
+  },
+  {
+    slug: "not-in-the-same-room",
+    type: "poem",
+    title: "Not in the Same Room",
+    stanzas: [
+      [
+        {text:"Don\u2019t bury me deep,"},
+        {text:"for I fear the dark,"},
+        {text:"I care not for the tomb,"},
+        {text:"nor for the beautiful arch."}
+      ],
+      [
+        {text:"Set me free in the mountains,"},
+        {text:"where birds nest unseen,"},
+        {text:"and wind tickles the trees."}
+      ],
+      [
+        {text:"Send me in the gentle meadows,"},
+        {text:"and I will be a wisp of cloud,"},
+        {text:"I will be the song of a thrush,"},
+        {text:"and in the hoot of the owl."}
+      ],
+      [
+        {text:"Don\u2019t miss me when I am gone,"},
+        {text:"I will be holding your hand,"},
+        {text:"just not in the same room."}
+      ],
+      [
+        {text:"I will be there, if you just take a look around.", italic:true}
+      ]
+    ]
+  }
+    ]
+  },
+  {
+    slug: "convictions",
+    title: "Convictions",
+    subtitle: "Fables about what gets destroyed for refusing to fit.",
+    works: [
+  {
+    slug: "the-taming",
+    type: "poem",
+    title: "The Taming",
+    stanzas: [
+      [
+        {text:"They rounded up the feral ones who howled instead of talked,"},
+        {text:"Who climbed before they toddled and ran before they walked."},
+        {text:"They combed the burrs out of their hair and trimmed their ragged nails,"},
+        {text:"And swapped their capes of leaves and mud for zippers and for scales."}
+      ],
+      [
+        {text:"They taught them how to raise a hand and wait to be called on,"},
+        {text:"They taught them please and thank you till the growling in them shone."},
+        {text:"They fenced the creek they swam in and they paved the tree they climbed,"},
+        {text:"They set a clock beside their bed and told them when it\u2019s time."}
+      ],
+      [
+        {text:"They said the mud was dirty and the thunder was too loud,"},
+        {text:"They said a child who talks to crows should not do so out loud."},
+        {text:"They brushed the wild right off of them like dust from a good coat -"},
+        {text:"And that is why the last wolf-child is only a old folks\u2019 quote."}
+      ]
+    ],
+    postscript: "ps: Heavily inspired from \u201cWild Child\u201d by <a href=\"https://www.facebook.com/esquinapoetica/posts/-from-wild-child-by-jekt/\" target=\"_blank\" rel=\"noopener noreferrer\">Jeanne Willis</a>"
+  },
+  {
+    slug: "the-trial",
+    type: "poem",
+    title: "The Trial",
+    stanzas: [
+      [
+        {text:"I remember the day it was killed,"},
+        {text:"when everyone gathered with glee,"},
+        {text:"they brought it all chained,"},
+        {text:"and asked, \u201cHow do you plead?\u201d"}
+      ],
+      [
+        {text:"The Dream looked up, all sincere,"},
+        {text:"unflinching, saying nothing,"},
+        {text:"searching into the crowd,"},
+        {text:"for Hope, but did not find it there."}
+      ],
+      [
+        {text:"Judges wore the mask of kindness,"},
+        {text:"sitting in high chair,"},
+        {text:"\u201cGuilty,\u201d they said, \u201cyou don\u2019t fit the mold,\u201d"},
+        {text:"but Dream refused to be harnessed."}
+      ],
+      [
+        {text:"They raked it over the coals,"},
+        {text:"whipped it bloody till it tore,"},
+        {text:"looking around for its friend,"},
+        {text:"its glassy eyes looked forlorn."}
+      ],
+      [
+        {text:"With bloodied hands, they dug a hole,"},
+        {text:"buried Dream in it, and covered it with stones."},
+        {text:"They did not see from behind their slipping masks -"},
+        {text:"Hope was carrying its soul."}
+      ]
+    ]
+  }
+    ]
+  }
 ];
-
-var COLLECTION_TITLE = "Studies in the Space Between";
-var COLLECTION_SUB = "Thoughts about the space between people, and the things that live there.";
 
 /* ============ helpers ============ */
 
@@ -499,11 +774,27 @@ function toRoman(num){
   return res;
 }
 
-function findWorkIndex(slug){
-  for (var i = 0; i < works.length; i++){
-    if (works[i].slug === slug) return i;
+function findCollection(slug){
+  for (var i = 0; i < collections.length; i++){
+    if (collections[i].slug === slug) return collections[i];
+  }
+  return null;
+}
+
+function findWorkIndex(collection, slug){
+  for (var i = 0; i < collection.works.length; i++){
+    if (collection.works[i].slug === slug) return i;
   }
   return -1;
+}
+
+/* search every collection for a work slug (used for legacy links) */
+function findAnywhere(slug){
+  for (var i = 0; i < collections.length; i++){
+    var idx = findWorkIndex(collections[i], slug);
+    if (idx !== -1) return { collection: collections[i], index: idx };
+  }
+  return null;
 }
 
 function renderWorkBody(work){
@@ -532,18 +823,19 @@ function renderIllustration(src){
   return '<div class="illustration">' + (src ? '<img src="' + src + '" alt="">' : '') + '</div>';
 }
 
-function renderPoemPage(index){
-  var work = works[index];
-  var prev = works[index - 1];
-  var next = works[index + 1];
+function renderPoemPage(collection, index){
+  var work = collection.works[index];
+  var prev = collection.works[index - 1];
+  var next = collection.works[index + 1];
   var pageNum = toRoman(index + 1);
-  var total = toRoman(works.length);
+  var total = toRoman(collection.works.length);
+  var base = "#/c/" + collection.slug + "/work/";
 
   var prevLink = prev
-    ? '<a href="#/work/' + prev.slug + '">&larr; ' + prev.title + '</a>'
+    ? '<a href="' + base + prev.slug + '">&larr; ' + prev.title + '</a>'
     : '<span class="disabled">&larr;</span>';
   var nextLink = next
-    ? '<a href="#/work/' + next.slug + '">' + next.title + ' &rarr;</a>'
+    ? '<a href="' + base + next.slug + '">' + next.title + ' &rarr;</a>'
     : '<span class="disabled">&rarr;</span>';
 
   return (
@@ -553,6 +845,7 @@ function renderPoemPage(index){
         '<h1 class="title">' + work.title + '</h1>' +
         '<div class="rule"></div>' +
         renderWorkBody(work) +
+        (work.postscript ? '<p class="postscript">' + work.postscript + '</p>' : '') +
       '</div>' +
       renderIllustration(work.illustrationBottom) +
       '<div class="foot-nav">' +
@@ -564,13 +857,13 @@ function renderPoemPage(index){
   );
 }
 
-function renderCover(){
+function renderCover(collection){
   var items = "";
-  for (var i = 0; i < works.length; i++){
+  for (var i = 0; i < collection.works.length; i++){
     items += (
       '<li>' +
         '<span class="num">' + toRoman(i+1) + '</span>' +
-        '<a href="#/work/' + works[i].slug + '">' + works[i].title + '</a>' +
+        '<a href="#/c/' + collection.slug + '/work/' + collection.works[i].slug + '">' + collection.works[i].title + '</a>' +
       '</li>'
     );
   }
@@ -579,8 +872,8 @@ function renderCover(){
     '<article class="leaf">' +
       '<div class="illustration"></div>' +
       '<div class="content">' +
-        '<div class="cover-title">' + COLLECTION_TITLE + '</div>' +
-        '<div class="cover-sub">' + COLLECTION_SUB + '</div>' +
+        '<div class="cover-title">' + collection.title + '</div>' +
+        '<div class="cover-sub">' + collection.subtitle + '</div>' +
         '<ul class="toc">' + items + '</ul>' +
       '</div>' +
       '<div class="illustration"></div>' +
@@ -588,37 +881,75 @@ function renderCover(){
   );
 }
 
+function renderSiteNav(activeSlug){
+  var html = "";
+  for (var i = 0; i < collections.length; i++){
+    if (i > 0) html += '<span class="sep">&middot;</span>';
+    var c = collections[i];
+    var cls = (c.slug === activeSlug) ? ' class="active"' : '';
+    html += '<a href="#/c/' + c.slug + '"' + cls + '>' + c.title + '</a>';
+  }
+  return html;
+}
+
 /* ============ router ============ */
 
 var stage = document.getElementById("stage");
+var navEl = document.getElementById("site-nav");
 
 function route(){
-  var hash = location.hash || "#/";
-  var match = hash.match(/^#\/work\/(.+)$/);
+  var hash = location.hash || "";
+  var workMatch = hash.match(/^#\/c\/([^\/]+)\/work\/(.+)$/);
+  var coverMatch = hash.match(/^#\/c\/([^\/]+)$/);
+  var legacyMatch = hash.match(/^#\/work\/(.+)$/);
+
+  if (legacyMatch){
+    var found = findAnywhere(legacyMatch[1]);
+    if (found){
+      location.hash = "#/c/" + found.collection.slug + "/work/" + legacyMatch[1];
+    } else {
+      location.hash = "#/c/" + collections[0].slug;
+    }
+    return;
+  }
+
   stage.innerHTML = "";
 
-  if (match){
-    var idx = findWorkIndex(match[1]);
-    if (idx === -1){ location.hash = "#/"; return; }
+  if (workMatch){
+    var collection = findCollection(workMatch[1]);
+    if (!collection){ location.hash = "#/c/" + collections[0].slug; return; }
+    var idx = findWorkIndex(collection, workMatch[2]);
+    if (idx === -1){ location.hash = "#/c/" + collection.slug; return; }
     document.body.classList.remove("on-cover");
-    stage.innerHTML = renderPoemPage(idx);
-  } else {
+    navEl.innerHTML = renderSiteNav(collection.slug);
+    stage.innerHTML = renderPoemPage(collection, idx);
+  } else if (coverMatch){
+    var collection2 = findCollection(coverMatch[1]);
+    if (!collection2){ location.hash = "#/c/" + collections[0].slug; return; }
     document.body.classList.add("on-cover");
-    stage.innerHTML = renderCover();
+    navEl.innerHTML = renderSiteNav(collection2.slug);
+    stage.innerHTML = renderCover(collection2);
+  } else {
+    location.hash = "#/c/" + collections[0].slug;
+    return;
   }
+
   window.scrollTo(0,0);
 }
 
 window.addEventListener("hashchange", route);
 document.addEventListener("keydown", function(e){
-  var hash = location.hash || "#/";
-  var match = hash.match(/^#\/work\/(.+)$/);
+  var hash = location.hash || "";
+  var match = hash.match(/^#\/c\/([^\/]+)\/work\/(.+)$/);
   if (!match) return;
-  var idx = findWorkIndex(match[1]);
+  var collection = findCollection(match[1]);
+  if (!collection) return;
+  var idx = findWorkIndex(collection, match[2]);
   if (idx === -1) return;
-  if (e.key === "ArrowRight" && works[idx+1]) location.hash = "#/work/" + works[idx+1].slug;
-  if (e.key === "ArrowLeft" && works[idx-1]) location.hash = "#/work/" + works[idx-1].slug;
-  if (e.key === "ArrowLeft" && idx === 0) location.hash = "#/";
+  var base = "#/c/" + collection.slug + "/work/";
+  if (e.key === "ArrowRight" && collection.works[idx+1]) location.hash = base + collection.works[idx+1].slug;
+  if (e.key === "ArrowLeft" && collection.works[idx-1]) location.hash = base + collection.works[idx-1].slug;
+  if (e.key === "ArrowLeft" && idx === 0) location.hash = "#/c/" + collection.slug;
 });
 
 route();
